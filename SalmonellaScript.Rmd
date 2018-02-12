@@ -15,7 +15,9 @@ library(ggmap)
 #reads data
 path = "Data/Salmonella/IsolateData.csv"
 data = read.csv(path, stringsAsFactors = FALSE)
+```
 
+```{r Clean Data, include=FALSE}
 #removes test numbers and extract only results
 names = colnames(data)
 Equiv = grepl(".Equiv", names)
@@ -23,6 +25,33 @@ Rslt = grepl(".Rslt", names)
 remove_vector = Equiv | Rslt
 conclustion_data = data[,!remove_vector]
 
-#filter for only resistant bacteria
+#filter for only resistant bacteria, determined by rated R for at least 3 antibiotics
+#To change criteria: change resistance > 2 to the new criteria and re run the next block of code
+resistant = c()
+concl.start = 14
+for (row in seq(1,nrow(conclustion_data))){
+  resistance = 0
+  for (col in seq(concl.start, ncol(conclustion_data))){
+    if (conclustion_data[row,col] == "R") {
+      resistance = resistance + 1
+    }
+  }
+  if (resistance > 0) {
+    resistant = append(resistant, TRUE)
+  } else {
+    resistant = append(resistant, FALSE)
+  }
+}
+resistant_salmonella = conclustion_data[resistant,]
+resistant_salmonella = resistant_salmonella[resistant_salmonella$Data.Year>2005,]
 
+#replaces region names with tangible locations
+#https://www.hhs.gov/about/agencies/iea/regional-offices
+
+for (i in seq(1,10)) {
+  region = resistant_salmonella[resistant_salmonella[,6] == "Region 6",]
+  plot(region)
+}
 ```
+
+
