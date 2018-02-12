@@ -1,7 +1,0 @@
----
-title: "Salmonella Project"
-author: "Alexander Tran, Cindy Lam"
-date: "2/11/2018"
-output: pdf_document
----
-
